@@ -7,12 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type SubscribeRequest struct {
+	Topic       string `json:"topic" binding:"required"`
+	CallbackUrl string `json:"callback_url" binding:"required"`
+}
+
 func Subscribe(b *broker.Broker) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var request struct {
-			Topic       string `json:"topic" binding:"required"`
-			CallbackUrl string `json:"callback_url" binding:"required"`
-		}
+		var request SubscribeRequest
+
 		if err := c.ShouldBindJSON(&request); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request format"})
 			return

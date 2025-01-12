@@ -66,7 +66,7 @@ func (b *Broker) Subscribe(sub *Subscriber) {
 	b.subscribers[sub.Topic.Name] = append(b.subscribers[sub.Topic.Name], sub)
 }
 
-func (b *Broker) AddTopic(topic string) {
+func (b *Broker) CreateTopic(topic string) {
 
 	_, exists := b.topics[topic]
 	if !exists {

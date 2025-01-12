@@ -30,7 +30,7 @@ func main() {
 
 	routers.SetApiRouter(engine, b)
 
-	b.AddTopic("topic1")
+	b.CreateTopic("topic1")
 
 	sub := &broker.Subscriber{
 		Topic:       broker.Topic{Name: "topic1"},
@@ -46,7 +46,7 @@ func main() {
 		b.Publish(msg)
 	}
 
-	if err := engine.Run(":8080"); err != nil {
+	if err := engine.Run(":8888"); err != nil {
 		panic(err)
 	}
 
