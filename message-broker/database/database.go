@@ -6,9 +6,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func CreateTopics(db *sql.DB) {
+func ExecuteMigrations(db *sql.DB) {
 
-	// Create a table
 	sql := `CREATE TABLE IF NOT EXISTS topics (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);`
 
 	_, err := db.Exec(sql)
@@ -17,7 +16,7 @@ func CreateTopics(db *sql.DB) {
 	}
 }
 
-func Create() *sql.DB {
+func Open() *sql.DB {
 	db, err := sql.Open("sqlite3", "./message-broker.db")
 	if err != nil {
 		panic(err)

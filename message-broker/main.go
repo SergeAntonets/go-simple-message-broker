@@ -16,13 +16,13 @@ func main() {
 
 	client := &http.Client{}
 
-	db := database.Create()
+	db := database.Open()
 	defer db.Close()
 
-	database.CreateTopics(db)
+	database.ExecuteMigrations(db)
 
 	bufferSize := 10
-	b := broker.NewBroker(bufferSize)
+	b := broker.NewBroker(bufferSize, &broker.DatabaseStorage{DB: db})
 	b.StartWorkers(5, client)
 
 	engine := gin.Default()
@@ -38,7 +38,7 @@ func main() {
 	}
 	b.Subscribe(sub)
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1; i++ {
 		msg := broker.Message{
 			Topic:   "topic1",
 			Payload: fmt.Sprintf("Payload-%d", i),

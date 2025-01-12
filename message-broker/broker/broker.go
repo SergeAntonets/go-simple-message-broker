@@ -2,6 +2,7 @@ package broker
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -9,8 +10,22 @@ import (
 	"time"
 )
 
-type storage interface {
-	saveTopic() (bool, error)
+type SaveTopic struct {
+	Name string
+}
+
+type Storage interface {
+	SaveTopic(topic SaveTopic) error
+}
+
+type DatabaseStorage struct {
+	DB *sql.DB
+}
+
+func (storage *DatabaseStorage) SaveTopic(topic SaveTopic) error {
+	fmt.Println("Hello from storage")
+
+	return nil
 }
 
 type Topic struct {
@@ -31,14 +46,16 @@ type Broker struct {
 	topics      map[string][]*Topic
 	subscribers map[string][]*Subscriber
 	messages    chan Message
+	storage     Storage
 }
 
-func NewBroker(bufferSize int) *Broker {
+func NewBroker(bufferSize int, storage Storage) *Broker {
 
 	return &Broker{
 		topics:      make(map[string][]*Topic),
 		subscribers: make(map[string][]*Subscriber),
 		messages:    make(chan Message, bufferSize),
+		storage:     storage,
 	}
 }
 
@@ -67,6 +84,8 @@ func (b *Broker) Subscribe(sub *Subscriber) {
 }
 
 func (b *Broker) CreateTopic(topic string) {
+
+	b.storage.SaveTopic(SaveTopic{Name: "Hello there"})
 
 	_, exists := b.topics[topic]
 	if !exists {
